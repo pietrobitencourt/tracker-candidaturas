@@ -12,7 +12,7 @@ O Tracker centraliza tudo em um só lugar: cadastra vagas e candidaturas, guarda
 
 - [x] Requisitos (MoSCoW)
 - [x] Modelo conceitual (MER/DER)
-- [ ] Modelo lógico (esquema relacional pronto, tipos e domínios em definição)
+- [x] Modelo lógico (tabelas, tipos e domínios)
 - [ ] Script SQL (MySQL)
 - [ ] Backend (API em Python)
 - [ ] Frontend
@@ -36,9 +36,17 @@ Próximas versões: avisos de prazos por Telegram ou e-mail, login, notificaçã
 
 ## Modelagem
 
+O modelo tem seis entidades (Empresa, Plataforma, Vaga, Candidatura, Etapa e Contato).
+
+**Modelo conceitual**
+
 ![Modelo conceitual](docs/modelagem/modelo-conceitual.png)
 
-O modelo tem seis entidades (Empresa, Plataforma, Vaga, Candidatura, Etapa e Contato). As decisões de modelagem, com justificativas, o esquema relacional e os valores únicos estão em [docs/modelagem/decisoes.md](docs/modelagem/decisoes.md).
+**Modelo lógico**
+
+![Modelo lógico](docs/modelagem/modelo-logico.png)
+
+As decisões de modelagem, com justificativas, o esquema relacional, os tipos das colunas e os valores únicos estão em [docs/modelagem/decisoes.md](docs/modelagem/decisoes.md).
 
 ## Tecnologias
 
