@@ -13,7 +13,7 @@ O Tracker centraliza tudo em um só lugar: cadastra vagas e candidaturas, guarda
 - [x] Requisitos (MoSCoW)
 - [x] Modelo conceitual (MER/DER)
 - [x] Modelo lógico (tabelas, tipos e domínios)
-- [ ] Script SQL (MySQL)
+- [x] Script SQL (MySQL), com testes das regras do banco
 - [ ] Backend (API em Python)
 - [ ] Frontend
 - [ ] Painel kanban
@@ -46,7 +46,7 @@ O modelo tem seis entidades (Empresa, Plataforma, Vaga, Candidatura, Etapa e Con
 
 ![Modelo lógico](docs/modelagem/modelo-logico.png)
 
-As decisões de modelagem, com justificativas, o esquema relacional, os tipos das colunas e os valores únicos estão em [docs/modelagem/decisoes.md](docs/modelagem/decisoes.md).
+As decisões de modelagem, com justificativas, o esquema relacional, os tipos das colunas e os valores únicos estão em [docs/modelagem/decisoes.md](docs/modelagem/decisoes.md). O script de criação do banco e os testes ficam em [database/](database/).
 
 ## Tecnologias
 
@@ -62,7 +62,7 @@ tracker-candidaturas/
 ├── docs/
 │   ├── requisitos.md
 │   └── modelagem/        # decisões, modelo conceitual e modelo lógico
-├── database/             # script SQL
+├── database/             # script de criação do banco e testes (schema.sql, testes.sql)
 ├── backend/              # API
 ├── frontend/             # interface
 └── README.md

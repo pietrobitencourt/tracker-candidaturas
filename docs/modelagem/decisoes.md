@@ -155,3 +155,46 @@ Domínios impostos com ENUM. Os valores ficam sem acento nem espaço
 (`em_andamento`, `lista_espera`), e o texto bonito é montado no frontend.
 
 O diagrama do BRModelo não exibe se uma coluna é obrigatória. A coluna **Obrigatória** desta tabela é a referência, e as regras de `NOT NULL` são definidas no script SQL.
+
+---
+
+## Etapa 4: Script SQL (MySQL 8.0)
+
+Arquivos em `database/`:
+
+- `schema.sql`: criação do banco e das seis tabelas.
+- `testes.sql`: testes das regras do banco, com dados fictícios, executados dentro de uma transação e desfeitos com `ROLLBACK`.
+
+### Decisões do script
+
+- **Banco `tracker_candidaturas`** com `utf8mb4` e collation `utf8mb4_0900_ai_ci`. A comparação ignora maiúsculas e acentos, então "iFood" e "IFOOD" contam como a mesma empresa.
+- **Nomes em minúsculas** (`snake_case`) em tabelas e colunas.
+- **Restrições nomeadas:** `fk_<filha>_<pai>` para chaves estrangeiras e `uq_<tabela>_<coluna>` para valores únicos. A mensagem de erro diz qual regra foi violada.
+- **Chaves estrangeiras dentro do `CREATE TABLE`** e `CREATE TABLE IF NOT EXISTS`, para o script poder rodar mais de uma vez.
+- **Sem `DROP` no script principal:** o banco vai guardar dados reais.
+
+### Regras de exclusão (`ON DELETE`)
+
+| Chave estrangeira | Ação | Motivo |
+|---|---|---|
+| etapa → candidatura | `CASCADE` | sem a candidatura, a etapa não faz sentido |
+| contato → candidatura | `CASCADE` | idem |
+| candidatura → vaga | `RESTRICT` | evita apagar o histórico ao excluir uma vaga |
+| vaga → empresa | `RESTRICT` | a empresa está em uso |
+| vaga → plataforma | `RESTRICT` | a plataforma está em uso |
+
+### Testes
+
+| Regra | Teste | Resultado esperado |
+|---|---|---|
+| Dados válidos e campos opcionais | inserir nas seis tabelas | sucesso |
+| Valores padrão | `tem_conta`, `desfecho`, `situacao` sem valor informado | `0`, `em_andamento`, `pendente` |
+| Uma candidatura por vaga | segunda candidatura na mesma vaga | erro 1062 |
+| Domínio do ENUM | `desfecho` fora da lista | erro 1265 |
+| Chave estrangeira | vaga com empresa inexistente | erro 1452 |
+| Link opcional e único | duas vagas sem link; dois links iguais | sucesso; erro 1062 |
+| Nome único sem diferenciar acento e caixa | "EMPRESA TÉSTE" | erro 1062 |
+| Coluna obrigatória | vaga sem cargo | erro 1048 |
+| Exclusão bloqueada | apagar empresa com vagas; apagar vaga com candidatura | erro 1451 |
+| Exclusão em cascata | apagar candidatura com etapa e contato | etapas e contatos removidos |
+| Isolamento | `ROLLBACK` no final | banco vazio |
